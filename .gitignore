@@ -1,0 +1,6 @@
+# Folders to ignore #
+OutputRoot/
+
+# Known files to ignore always #
+*.suo
+*.user
