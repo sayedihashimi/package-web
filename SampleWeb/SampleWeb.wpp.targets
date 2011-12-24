@@ -1,0 +1,9 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <SedodreamPackageFolder Condition=" '$(SedodreamPackageFolder)'=='' ">$(MSBuildProjectDirectory)\</SedodreamPackageFolder>
+  </PropertyGroup>
+
+  <Import Project="$(SedodreamPackageFolder)\Sedodream.Package.targets" Label="SedodreamPackageImport"/>
+  
+</Project>

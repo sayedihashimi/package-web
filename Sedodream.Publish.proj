@@ -1,0 +1,76 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="TransformWebConfig">
+  <!-- 
+    This script is responsbile for transforming web.config with the env
+    transform into the final web.config -->
+
+  <!--
+  Properties which should be passed in:
+  DeployFolder      Path to the folder which contains the Microsoft.WebApplication.Build.Tasks.dll and other files
+  EnvName           (Optional) Name of the environemnt (if missing then TransformFile must be passed)
+  TransformFile     (Optional) Full path to the transform file (if missing then EnvName must be passed)
+  -->
+
+  <PropertyGroup>
+    <WebConfigTemplateName Condition=" '$(WebConfigTemplateName)'=='' ">t.web.config</WebConfigTemplateName>
+    <_DeployFolder>$(DeployFolder)</_DeployFolder>
+    <_DeployFolder Condition="!HasTrailingSlash('$(DeployFolder)')">$(DeployFolder)\</_DeployFolder>
+    <TransformAssemblyPath Condition=" '$(TransformAssemblyPath)'=='' ">$(_DeployFolder)SlowCheetah.Tasks.dll</TransformAssemblyPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TransformWebConfig>
+      $(TransformWebConfig);
+      ValidateReqProperties;
+      _InitTransformFile;
+    </TransformWebConfig>
+  </PropertyGroup>
+
+  <UsingTask TaskName="TransformXml" AssemblyFile="$(TransformAssemblyPath)"/>
+
+  <Target Name="TransformWebConfig" DependsOnTargets="$(TransformWebConfig)">
+    <Message Text="TransformWebConfig" />
+    
+    <PropertyGroup>
+      <_DeployOutFolder>$(_DeployFolder)Out\</_DeployOutFolder>
+    </PropertyGroup>
+    <MakeDir Directories="$(_DeployOutFolder)"/>
+    <TransformXml
+      Source="$(_DeployFolder)$(WebConfigTemplateName)"
+      Transform="$(TransformFile)"
+      Destination="$(_DeployOutFolder)web.config" />
+    <!-- Now we have to copy the result to the root folder -->
+    <!-- TODO: Would be better to do this with a replace if possible, or possibly another sync using filePath -->
+    <Copy SourceFiles="$(_DeployOutFolder)web.config"
+          DestinationFiles="$(_DeployOutFolder)..\..\web.config"/>
+  </Target>
+
+  <Target Name="_InitTransformFile">
+    <PropertyGroup>
+      <TransformFile Condition=" '$(TransformFile)'=='' ">$(_DeployFolder)t.web.$(EnvName).config</TransformFile>
+    </PropertyGroup>
+
+
+    <Error Condition=" !Exists('$(TransformFile)')"
+           Text="Transform file not found at [$(TransformFile)]"/>
+  </Target>
+
+  <Target Name="ValidateReqProperties">
+    <Message Text="ValidateReqProperties"/>
+    <Message Text="DeployFolder: $(DeployFolder)"/>
+    <Error Condition=" '$(DeployFolder)'=='' "
+           Text="DeployFolder property not passed"/>
+
+    <PropertyGroup>
+      <DeployFolder Condition=" !HasTrailingSlash('$(DeployFolder)') ">$(DeployFolder)\</DeployFolder>
+    </PropertyGroup>
+
+    <Error Condition="!Exists($(DeployFolder))"
+           Text="Deploy folder does not exists at [$(DeployFolder)]" />
+    <Error Condition=" '$(EnvName)'=='' and '$(TransformFile)'=='' "
+           Text="EnvName or TransformFile property must be set but both were empty"/>
+
+    <Error Condition=" !Exists('$(DeployFolder)$(WebConfigTemplateName)')"
+           Text="Transform source file not found at [$(DeployFolder)$(WebConfigTemplateName)]" />
+  </Target>
+
+</Project>

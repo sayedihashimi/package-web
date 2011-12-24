@@ -1,0 +1,20 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="Sedodream.Powershell.Publish.UI.PublishDialog"
+        Title="Web Package Publishing" Height="299" Width="783">
+    <Grid>
+    	<Label Content="Server:" HorizontalAlignment="Left" Margin="46.37,54,0,0" VerticalAlignment="Top" Width="100.63"/>
+    	<TextBox Margin="168,56,8,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" RenderTransformOrigin="-4.65,-10.479"/>
+    	<Label Content="Site Name:" HorizontalAlignment="Left" Margin="46.37,89,0,0" VerticalAlignment="Top" Width="100.63"/>
+    	<TextBox Margin="168,91,8,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" RenderTransformOrigin="-4.65,-10.479"/>
+    	<Label Content="Username:" HorizontalAlignment="Left" Margin="46.37,123,0,0" VerticalAlignment="Top" Width="100.63"/>
+    	<TextBox Margin="168,125,8,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" RenderTransformOrigin="-4.65,-10.479"/>
+    	<Label Content="Password:" HorizontalAlignment="Left" Margin="46.37,154.312,0,0" VerticalAlignment="Top" Width="100.63"/>
+    	<PasswordBox Margin="168,156.626,8,0" VerticalAlignment="Top"/>
+    	<Button x:Name="ButtonValidate" Content="Validate Connection" HorizontalAlignment="Left" Margin="46.37,182,0,0" Width="120" VerticalAlignment="Top"/>
+    	<Button x:Name="ButtonPublish" Content="Publish" HorizontalAlignment="Left" Margin="46.37,0,0,8" VerticalAlignment="Bottom" Width="120"/>
+    	<Label Content="Environment:" HorizontalAlignment="Left" Margin="46.37,26.723,0,0" VerticalAlignment="Top" Width="100.63"/>
+    	<ComboBox Margin="168,26.723,8,0" VerticalAlignment="Top"/>
+    </Grid>
+</Window>
