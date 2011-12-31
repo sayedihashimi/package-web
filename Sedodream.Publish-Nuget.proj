@@ -17,7 +17,7 @@
     <ContentItems Include="$(SourceRoot)Powershell\Publish-Interactive.ps1">
       <DestDir>SedodreamPackage\</DestDir>
     </ContentItems>
-    <ContentItems Include="$(SourceRoot)SampleWeb\Sedodream.Package.targets">
+    <ContentItems Include="$(SourceRoot)Nuget\Sedodream.Package.targets">
       <DestDir>SedodreamPackage\</DestDir>
     </ContentItems>
     <ContentItems Include="$(SourceRoot)Sedodream.Publish.proj">
