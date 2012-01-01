@@ -1,0 +1,75 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"  ToolsVersion="4.0">
+  <!-- This file just contains custom tasks -->
+  <UsingTask
+    TaskName="ConvertToModule"
+    TaskFactory="CodeTaskFactory"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+
+    <ParameterGroup>
+      <SourcePs1 Required="true"/>
+      <DestModulePath Required="true"/>
+      <StartTagStr />
+      <EndTagStr />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.IO"/>
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[ 
+      // set defaults for start/end tag
+      if(string.IsNullOrWhiteSpace(StartTagStr)){StartTagStr = @"### START MODULE SECTION ####";}
+      if (string.IsNullOrWhiteSpace(EndTagStr)) { EndTagStr = @"### END MODULE SECTION ####"; }
+
+      // make sure that the source file exists
+      if (!File.Exists(SourcePs1)) {
+      string msg = string.Format("SourcePs1 file not found at [{0}]",SourcePs1);
+      throw new FileNotFoundException(msg);
+      }
+      if (File.Exists(DestModulePath)) {
+      string msg = string.Format("DestModulePath file already exists [{0}]", DestModulePath);
+      throw new FileNotFoundException(msg);
+      }
+
+      bool foundStartTag = false;
+      bool foundEndTag = false;
+
+      // we want to open a reader on the file and a write on the dest file
+      using (TextReader reader = new StreamReader(SourcePs1))
+      using(TextWriter writer = new StreamWriter(DestModulePath)) {
+      string currentLine = null;
+      while ((currentLine = reader.ReadLine()) != null) {
+      // check for the end tag before writing to prevent wrting out the end tag itself
+      if(string.Compare(EndTagStr,currentLine.Trim(),StringComparison.OrdinalIgnoreCase)==0){
+      foundEndTag = true;
+      break;
+      }
+
+      // if we are in the section then write the content to the dest
+      if(foundStartTag && !foundEndTag ){
+      writer.WriteLine(currentLine);
+      }
+
+      // check for the start tag after writing to prevent writing out the start tag itself
+      if(string.Compare(StartTagStr,currentLine.Trim(),StringComparison.OrdinalIgnoreCase)==0){
+      foundStartTag = true;
+      }
+      }
+      }
+
+      // check foundStartTag and foundEndTag and report an error if there is one
+      if(!foundStartTag){
+      Log.LogError("Didn't find start tag [{0}] inside of file [{1}]",StartTagStr,SourcePs1);
+      }
+      if(!foundEndTag){
+      Log.LogError("Didn't find end tag [{0}] inside of file [{1}]",EndTagStr,SourcePs1);
+      }
+
+      if (!Log.HasLoggedErrors) {
+      Log.LogMessage("Finished converting source ps1 file to modlue.");
+      }
+
+      return !Log.HasLoggedErrors;
+      ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+</Project>

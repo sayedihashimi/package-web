@@ -1,0 +1,74 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="RunTests"  ToolsVersion="4.0">
+  <PropertyGroup>
+    <SourceRoot Condition=" '$(SourceRoot)'=='' ">$(MSBuildProjectDirectory)\..\</SourceRoot>
+    <TestSourceRoot Condition=" '$(TestSourceRoot)'=='' ">$(SourceRoot)testing\</TestSourceRoot>
+    <OutputRootNoTrailingSlash Condition=" '$(OutputRoot)'=='' ">$(SourceRoot)OutputRoot</OutputRootNoTrailingSlash>
+    <OutputRoot Condition=" '$(OutputRoot)'=='' ">$(OutputRootNoTrailingSlash)\</OutputRoot>
+    <TestOutputRoot Condition=" '$(TestOutputRoot)'=='' ">$(OutputRoot)tests\</TestOutputRoot>
+    
+    <PublishPs1 Condition=" '$(PublishPs1)'=='' ">$(MSBuildProjectDirectory)\..\Powershell\Publish-Interactive.ps1</PublishPs1>
+    
+    <DestModulePath Condition=" '$(DestModulePath)'=='' ">$(TestOutputRoot)PublishIntModule.psm1</DestModulePath>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <PathToPkgWebCustomTasks Condition=" '$(PathToPkgWebCustomTasks)'=='' ">$(MSBuildProjectDirectory)\package-web.custom-tasks.tasks</PathToPkgWebCustomTasks>
+  </PropertyGroup>
+
+  <Target Name="Remove">
+    <Message Text="TestSourceFiles: @(TestSourceFiles)" Importance="high" />
+    <Message Text="***********************************************************************"/>
+    <Message Text="TestSourceFiles.RelativeDir: @(TestSourceFiles->'%(Filename):%(RelativeDir)')" Importance="high" />
+  </Target>
+  
+  <ItemGroup>
+    <TestSourceFiles Include="$(TestSourceRoot)test*.ps1"/>
+    <PsExpectFiles Include="$(TestSourceRoot)psexpect\**\*"/>
+  </ItemGroup>
+  
+  <Import Project="$(PathToPkgWebCustomTasks)"/>
+
+  <PropertyGroup>
+    <RunTestsDependsOn>
+      Clean;
+      CopyTestFilesToOutputFolder;
+      _PreparePSModule;
+      _DiscoverTestsInOutputFolder;
+      ExecuteTests
+    </RunTestsDependsOn>
+  </PropertyGroup>
+
+  <Target Name="RunTests" DependsOnTargets="$(RunTestsDependsOn)" />
+  
+  <Target Name="Clean">
+    <!-- Delete all files in the OutputRoot -->
+    <ItemGroup>
+      <_FilesToDelete Remove="@(_FilesToDelete)"/>
+      <_FilesToDelete Include="$(TestOutputRoot)**\*" />
+    </ItemGroup>
+    <Delete Files="@(_FilesToDelete)"/>
+  </Target>
+
+  <Target Name="CopyTestFilesToOutputFolder">
+    <Copy SourceFiles="@(TestSourceFiles)"
+          DestinationFiles="@(TestSourceFiles->'$(TestOutputRoot)%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(PsExpectFiles)"
+          DestinationFiles="@(PsExpectFiles->'$(TestOutputRoot)psexpect\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+  
+  <Target Name="_PreparePSModule">
+    <MakeDir Directories="$(TestOutputRoot)"/>
+    <ConvertToModule SourcePs1="$(PublishPs1)" DestModulePath="$(DestModulePath)" />
+  </Target>
+
+  <Target Name="_DiscoverTestsInOutputFolder">
+    <!-- look for any ps1 file in TestOutputRoot that is named like: 'test*.ps1' -->
+  </Target>
+  
+  <Target Name="ExecuteTests">
+    <!-- call powershell.exe on all the test cases -->
+    <Message Text="calling powershell.exe"/>
+    <Exec Command="powershell.exe -ExecutionPolicy RemoteSigned -File &quot;C:\Data\Personal\My Repo\package-web\testing\test-sample.ps1&quot;" />
+  </Target>
+  
+</Project>
