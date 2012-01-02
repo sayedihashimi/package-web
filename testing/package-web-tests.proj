@@ -5,7 +5,8 @@
     <TestSourceRoot Condition=" '$(TestSourceRoot)'=='' ">$(SourceRoot)testing\</TestSourceRoot>
     <OutputRootNoTrailingSlash Condition=" '$(OutputRoot)'=='' ">$(SourceRoot)OutputRoot</OutputRootNoTrailingSlash>
     <OutputRoot Condition=" '$(OutputRoot)'=='' ">$(OutputRootNoTrailingSlash)\</OutputRoot>
-    <TestOutputRoot Condition=" '$(TestOutputRoot)'=='' ">$(OutputRoot)tests\</TestOutputRoot>
+    <TestOutputRootNoTrailingSlash Condition=" ''=='' ">$(OutputRoot)tests</TestOutputRootNoTrailingSlash>
+    <TestOutputRoot Condition=" '$(TestOutputRoot)'=='' ">$(TestOutputRootNoTrailingSlash)\</TestOutputRoot>
     
     <PublishPs1 Condition=" '$(PublishPs1)'=='' ">$(MSBuildProjectDirectory)\..\Powershell\Publish-Interactive.ps1</PublishPs1>
     
@@ -17,8 +18,13 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <TestSourceFiles Include="$(TestSourceRoot)*.ps1"/>
-    <PsExpectFiles Include="$(TestSourceRoot)psexpect\**\*"/>
+    <FilesInTestFolderToExclude Include="$(TestSourceRoot)*.log"/>
+    <FilesInTestFolderToExclude Include="$(TestSourceRoot)PublishIntModule.psm1" />
+    <FilesInTestFolderToExclude Include="$(TestSourceRoot)Ps1TestLib_0_3.zip" />
+    <FilesInTestFolderToExclude Include="$(TestSourceRoot)*.tasks" />
+    <FilesInTestFolderToExclude Include="$(TestSourceRoot)*.proj"/>
+    
+    <TestSourceFiles Include="$(TestSourceRoot)**\*" Exclude="@(FilesInTestFolderToExclude)"/>
   </ItemGroup>
   
   <Import Project="$(PathToPkgWebCustomTasks)"/>
@@ -48,8 +54,8 @@
   <Target Name="CopyTestFilesToOutputFolder">
     <Copy SourceFiles="@(TestSourceFiles)"
           DestinationFiles="@(TestSourceFiles->'$(TestOutputRoot)%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="@(PsExpectFiles)"
-          DestinationFiles="@(PsExpectFiles->'$(TestOutputRoot)psexpect\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <!-- also create the psout folder -->
+    <MakeDir Directories="$(TestOutputRoot)psout\"/>
   </Target>
   
   <Target Name="_PreparePSModule">
@@ -68,15 +74,18 @@
     <ExecuteTestsDependsOn>
       _DiscoverTestsInOutputFolder
     </ExecuteTestsDependsOn>
+    
+    <!-- These are the parametes that will be passed when powershell.exe is invoked (note these are always positional -->
+    <!-- We need to pass a path w/o a trailing slash otherwise PS gets confused with \" when passed in it becomes " -->
+    <_PsParameters>&quot;$(TestOutputRootNoTrailingSlash)&quot;</_PsParameters>
   </PropertyGroup>
-
   <Target Name="ExecuteTests" DependsOnTargets="$(ExecuteTestsDependsOn)" Outputs="%(PsFilesToTest.Identity)">
     <!-- call powershell.exe on all the test cases -->
-    <Message Text="calling powershell.exe"/>
+    <Message Text="calling powershell.exe on script [%(PsFilesToTest.FullPath)]"/>
     <!-- since we are calling powershell.exe when this file is built it should be invoked with
     the 64 bit version of MSBuild (if building on a 64 bit machine). Otherwise the PS environment in which the test cases
     will be different than when ran outside of this process.-->
-    <Exec Command="powershell.exe -ExecutionPolicy RemoteSigned -File &quot;G:\Data\Development\My Code\package-web\OutputRoot\tests\test-sample.ps1&quot;"
+    <Exec Command="powershell.exe -NonInteractive -ExecutionPolicy RemoteSigned -File &quot;%(PsFilesToTest.FullPath)&quot; $(_PsParameters)"
           IgnoreExitCode="true">
       <Output PropertyName="CommandExitCode" TaskParameter="ExitCode"/>
     </Exec>
@@ -86,10 +95,12 @@
     based on the property-->
     <PropertyGroup>
       <DetectedPsTestFailure Condition=" '$(CommandExitCode)' != '0' ">true</DetectedPsTestFailure>
-    </PropertyGroup>    
+    </PropertyGroup>
+    <Message Text="Found test errors in script: %(PsFilesToTest.FullPath)" Importance="high" Condition=" '$(CommandExitCode)' != '0' "/>
   </Target>
 
   <Target Name="FailBuildBasedOnTests">
+    <Message Text="DetectedPsTestFailure: $(DetectedPsTestFailure)" />
     <Error Text="One or more PS test cases have failed. Review the log for the failures (they will show up in the log as warnings)."
            Condition=" '$(DetectedPsTestFailure)'=='true' "/> 
   </Target>
