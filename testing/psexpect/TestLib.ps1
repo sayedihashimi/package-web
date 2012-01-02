@@ -351,8 +351,10 @@ function global:BuildMessage([System.Collections.Hashtable]$TestResult)
 # Raises the assertions to the console then clears the collection
 function global:RaiseAssertions
 {
+# sayedha: I modified this to return if an error was detected or not
     if (!(Test-Path variable:RaiseAssertionFilter)) { $RaiseAssertionFilter = $DefaultRaiseAssertionFilter} 
-    
+ 
+    $encounteredError = $false   
     for ($a=0; $a -lt $Assertions.Count; $a++) 
     {
         $backColour = $ResultColour.Background
@@ -361,9 +363,15 @@ function global:RaiseAssertions
             $foreColour = GetForegroundColour $Assertions[$a]
             $msg = BuildMessage $Assertions[$a]
             write-host $msg -foregroundcolor $foreColour -backgroundcolor $backColour
+            
+            if($Assertions[$a].Result -eq $ResultPrefix.Failed) {
+                $encounteredError = $true
+            }
         }
     }
-    $Assertions.Clear()
+    $Assertions.Clear() | Out-Null
+    
+    return !($encounteredError)
 }
 
 # Determine the colour of the text on the console based on the intent and the result

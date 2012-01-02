@@ -1,4 +1,5 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="RunTests"  ToolsVersion="4.0">
+﻿<!-- NOTE: If running on a 64 bit machine then invoke this with the 64 bit msbuild.exe. More details in target ExecuteTests -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="RunTests"  ToolsVersion="4.0">
   <PropertyGroup>
     <SourceRoot Condition=" '$(SourceRoot)'=='' ">$(MSBuildProjectDirectory)\..\</SourceRoot>
     <TestSourceRoot Condition=" '$(TestSourceRoot)'=='' ">$(SourceRoot)testing\</TestSourceRoot>
@@ -14,15 +15,9 @@
   <PropertyGroup>
     <PathToPkgWebCustomTasks Condition=" '$(PathToPkgWebCustomTasks)'=='' ">$(MSBuildProjectDirectory)\package-web.custom-tasks.tasks</PathToPkgWebCustomTasks>
   </PropertyGroup>
-
-  <Target Name="Remove">
-    <Message Text="TestSourceFiles: @(TestSourceFiles)" Importance="high" />
-    <Message Text="***********************************************************************"/>
-    <Message Text="TestSourceFiles.RelativeDir: @(TestSourceFiles->'%(Filename):%(RelativeDir)')" Importance="high" />
-  </Target>
   
   <ItemGroup>
-    <TestSourceFiles Include="$(TestSourceRoot)test*.ps1"/>
+    <TestSourceFiles Include="$(TestSourceRoot)*.ps1"/>
     <PsExpectFiles Include="$(TestSourceRoot)psexpect\**\*"/>
   </ItemGroup>
   
@@ -34,7 +29,8 @@
       CopyTestFilesToOutputFolder;
       _PreparePSModule;
       _DiscoverTestsInOutputFolder;
-      ExecuteTests
+      ExecuteTests;
+      FailBuildBasedOnTests
     </RunTestsDependsOn>
   </PropertyGroup>
 
@@ -62,13 +58,39 @@
   </Target>
 
   <Target Name="_DiscoverTestsInOutputFolder">
-    <!-- look for any ps1 file in TestOutputRoot that is named like: 'test*.ps1' -->
+    <!-- look for any ps1 file in TestOutputRoot that is named like: 'test-*.ps1' -->
+    <ItemGroup>
+      <PsFilesToTest Include="$(TestOutputRoot)**\test-*.ps1"/>
+    </ItemGroup>    
   </Target>
-  
-  <Target Name="ExecuteTests">
+
+  <PropertyGroup>
+    <ExecuteTestsDependsOn>
+      _DiscoverTestsInOutputFolder
+    </ExecuteTestsDependsOn>
+  </PropertyGroup>
+
+  <Target Name="ExecuteTests" DependsOnTargets="$(ExecuteTestsDependsOn)" Outputs="%(PsFilesToTest.Identity)">
     <!-- call powershell.exe on all the test cases -->
     <Message Text="calling powershell.exe"/>
-    <Exec Command="powershell.exe -ExecutionPolicy RemoteSigned -File &quot;C:\Data\Personal\My Repo\package-web\testing\test-sample.ps1&quot;" />
+    <!-- since we are calling powershell.exe when this file is built it should be invoked with
+    the 64 bit version of MSBuild (if building on a 64 bit machine). Otherwise the PS environment in which the test cases
+    will be different than when ran outside of this process.-->
+    <Exec Command="powershell.exe -ExecutionPolicy RemoteSigned -File &quot;G:\Data\Development\My Code\package-web\OutputRoot\tests\test-sample.ps1&quot;"
+          IgnoreExitCode="true">
+      <Output PropertyName="CommandExitCode" TaskParameter="ExitCode"/>
+    </Exec>
+
+    <!-- if the error code is non-zero then set the DetectedPsTestFailure property 
+    but continue executing all the test cases, the FailBuildBasedOnTests will fail
+    based on the property-->
+    <PropertyGroup>
+      <DetectedPsTestFailure Condition=" '$(CommandExitCode)' != '0' ">true</DetectedPsTestFailure>
+    </PropertyGroup>    
   </Target>
-  
+
+  <Target Name="FailBuildBasedOnTests">
+    <Error Text="One or more PS test cases have failed. Review the log for the failures (they will show up in the log as warnings)."
+           Condition=" '$(DetectedPsTestFailure)'=='true' "/> 
+  </Target>
 </Project>

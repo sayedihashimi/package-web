@@ -26,7 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "testing", "testing", "{AB1E
 	ProjectSection(SolutionItems) = preProject
 		testing\package-web-tests.proj = testing\package-web-tests.proj
 		testing\package-web.custom-tasks.tasks = testing\package-web.custom-tasks.tasks
-		testing\tests-01.ps1 = testing\tests-01.ps1
+		testing\test-sample.ps1 = testing\test-sample.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "psexpect", "psexpect", "{D5874232-E541-456F-A1B5-C157DC31F060}"
