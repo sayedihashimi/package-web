@@ -97,6 +97,7 @@
       <DetectedPsTestFailure Condition=" '$(CommandExitCode)' != '0' ">true</DetectedPsTestFailure>
     </PropertyGroup>
     <Message Text="Found test errors in script: %(PsFilesToTest.FullPath)" Importance="high" Condition=" '$(CommandExitCode)' != '0' "/>
+    <Message Text="CommandExitCode: $(CommandExitCode)" />
   </Target>
 
   <Target Name="FailBuildBasedOnTests">
