@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>PackageWeb</id>
-    <version>1.0</version>
+    <version>1.1</version>
     <authors>Sayed Ibrahim Hashimi</authors>
     <owners>Sayed Ibrahim Hashimi</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
@@ -12,8 +12,8 @@
     <description>Currently this is a beta release. 
     This will extend web packages so that you can publish a package to different environments. Your packages will contain all of your web.config transforms.
     </description>
-    <releaseNotes>This is the initial release (beta quality).</releaseNotes>
-    <copyright>Copyright 2011</copyright>
+    <releaseNotes>Currently this is in beta.</releaseNotes>
+    <copyright>Copyright 2011 Sayed Ibrahim Hashimi</copyright>
     <tags>Package Web Deploy ASP.NET MSDeploy </tags>
     <!--<dependencies>
       <dependency id="SampleDependency" version="1.0" />
