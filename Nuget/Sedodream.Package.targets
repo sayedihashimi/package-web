@@ -2,7 +2,7 @@
   <PropertyGroup>
     <!-- Don't make this _Deploy becuase it conflicts with default IIS app path name -->
     <_DeployFolderName>_Deploy_</_DeployFolderName>
-    <SedodreamInstallFolder Condition=" '$(SedodreamInstallFolder)'=='' ">$(MSBuildProjectDirectory)\SedodreamPackage\</SedodreamInstallFolder>
+    <SedodreamInstallFolder Condition=" '$(SedodreamInstallFolder)'=='' ">$(MSBuildProjectDirectory)\_Package\</SedodreamInstallFolder>
     <SedodreamPublishProjPath Condition=" '$(SedodreamPublishProjPath)'=='' ">$(SedodreamInstallFolder)Sedodream.Publish.proj</SedodreamPublishProjPath>
     <SlowCheetahTransformXmlTaskPath Condition=" '$(SlowCheetahTransformXmlTaskPath)'=='' ">$(MSBuildThisFileDirectory)\SlowCheetah.Tasks.dll</SlowCheetahTransformXmlTaskPath>
   </PropertyGroup>

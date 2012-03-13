@@ -5,4 +5,4 @@ OutputRoot/
 *.suo
 *.user
 ~*.docx
-msbuild.log
+msbuild*.log
