@@ -59,7 +59,7 @@ function AddImportToWppTargets {
     param($projRoot)
    
     $targetsPropertyName = "SedodreamPackageFolder"
-    $importPath = "`$(MSBuildProjectDirectory)\SedodreamPackage\"
+    $importPath = "`$(MSBuildProjectDirectory)\_Package\"
     $importCondition = " '`$(SedodreamPackageFolder)'=='' "
     
     $importFileName = "Sedodream.Package.targets"

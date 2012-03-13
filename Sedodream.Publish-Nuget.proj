@@ -9,6 +9,7 @@
     <NugetExe Condition=" '$(NugetExe)'=='' ">$(SourceRoot)Lib\NuGet.exe</NugetExe>
     <NugetLocalRepo Condition=" '$(NugetLocalRepo)'=='' ">C:\Temp\Nuget\LocalRepo\</NugetLocalRepo>
     <PublishPs1 Condition=" '$(PublishPs1)'=='' ">$(SourceRoot)Powershell\Publish-Interactive.ps1</PublishPs1>
+    <PackageDirectory Condition=" '$(PackageDirectory)'=='' ">_Package</PackageDirectory>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,16 +17,16 @@
     <_NugetSpecFile Include="$(SourceRoot)Nuget\Package.nuspec" />
     <ToolsItems Include="$(SourceRoot)Nuget\Install.ps1" />
     <ContentItems Include="$(PublishPs1)">
-      <DestDir>SedodreamPackage\</DestDir>
+      <DestDir>$(PackageDirectory)\</DestDir>
     </ContentItems>
     <ContentItems Include="$(SourceRoot)Nuget\Sedodream.Package.targets">
-      <DestDir>SedodreamPackage\</DestDir>
+      <DestDir>$(PackageDirectory)\</DestDir>
     </ContentItems>
     <ContentItems Include="$(SourceRoot)Sedodream.Publish.proj">
-      <DestDir>SedodreamPackage\</DestDir>
+      <DestDir>$(PackageDirectory)\</DestDir>
     </ContentItems>
     <ContentItems Include="$(SourceRoot)Lib\SlowCheetah.Tasks.dll">
-      <DestDir>SedodreamPackage\</DestDir>
+      <DestDir>$(PackageDirectory)\</DestDir>
     </ContentItems>
   </ItemGroup>
 
