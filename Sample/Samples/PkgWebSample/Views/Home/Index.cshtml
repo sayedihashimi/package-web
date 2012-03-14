@@ -1,0 +1,17 @@
+﻿@model PkgWebSample.Models.HomePageModel
+
+<header>App Settings</header>
+<ul class="info">
+    @foreach (var appSetting in @Model.AppSettings) {
+        <li class="key">@appSetting.Key</li>
+        <li class="value">@appSetting.Value</li>
+    }
+</ul>
+
+<header>Connection Strings</header>
+<ul class="info">
+    @foreach (var connectionString in @Model.ConnectionStrings) {
+        <li class="key">@connectionString.Key</li>
+        <li class="value">@connectionString.Value</li>
+    }
+</ul>
