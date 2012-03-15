@@ -177,12 +177,19 @@
     <Content Include="Views\Shared\_LogOnPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
+    <Content Include="_Package\SlowCheetah.Tasks.dll" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PkgWebSample.wpp.targets" />
+    <None Include="_Package\Publish-Interactive.ps1" />
+    <None Include="_Package\Sedodream.Package.targets" />
+    <None Include="_Package\Sedodream.Publish.proj" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
