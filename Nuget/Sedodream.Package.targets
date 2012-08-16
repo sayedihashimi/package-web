@@ -6,7 +6,7 @@
     <SedodreamPublishProjPath Condition=" '$(SedodreamPublishProjPath)'=='' ">$(SedodreamInstallFolder)Sedodream.Publish.proj</SedodreamPublishProjPath>
     <SlowCheetahTransformXmlTaskPath Condition=" '$(SlowCheetahTransformXmlTaskPath)'=='' ">$(MSBuildThisFileDirectory)\SlowCheetah.Tasks.dll</SlowCheetahTransformXmlTaskPath>
   </PropertyGroup>
-  
+
   <Target Name="CopyPublishPs1ToPackageFolder" AfterTargets="Package">
     <PropertyGroup>
       <_PublishPs1>$(SedodreamInstallFolder)Publish-Interactive.ps1</_PublishPs1>
@@ -14,19 +14,30 @@
 
     <Copy SourceFiles="$(_PublishPs1)" DestinationFiles="$(DefaultPackageOutputDir)\Publish-Interactive.ps1"/>
 
+    <!--  -->
+    <ItemGroup Condition=" '$(DesktopBuildPackageLocation)'!='' ">
+      <_PkgLoc Include="$(DesktopBuildPackageLocation)"/>
+    </ItemGroup>
+    <Copy SourceFiles="$(_PublishPs1)"
+          DestinationFiles="@(_PkgLoc->'%(rootdir)%(directory)Publish-Interactive.ps1')"
+          Condition=" '$(DesktopBuildPackageLocation)'!='' "/>
   </Target>
-  
+
   <PropertyGroup>
+    <OnAfterPipelinePreDeployCopyAllFilesToOneFolder>
+      $(OnAfterPipelinePreDeployCopyAllFilesToOneFolder);
+      CopyTransformFilesWap;
+    </OnAfterPipelinePreDeployCopyAllFilesToOneFolder>
     <CopyAllFilesToSingleFolderForPackageDependsOn>
       IncludWebConfigTransformsForPublishing;
       $(CopyAllFilesToSingleFolderForPackageDependsOn);
     </CopyAllFilesToSingleFolderForPackageDependsOn>
   </PropertyGroup>
-  
-  <Target Name="IncludWebConfigTransformsForPublishing">
+
+  <Target Name="IncludWebConfigTransformsForPublishing" AfterTargets="CopyPipelineFiles" BeforeTargets="CopyAllFilesToSingleFolderForMsdeploy">
     <ItemGroup>
       <_WCTransforms Include="$(MSBuildProjectDirectory)\web.config;$(MSBuildProjectDirectory)\web.*.config"/>
-      
+
       <_SlowCheetahTasksItem Remove="@(_SlowCheetahTasksItem)"/>
       <_SlowCheetahTasksItem Include="$(SlowCheetahTransformXmlTaskPath)"/>
     </ItemGroup>
@@ -34,7 +45,7 @@
     <PropertyGroup>
       <_SlowCheetahFilename>@(_SlowCheetahTasksItem->'%(Filename)%(Extension)')</_SlowCheetahFilename>
     </PropertyGroup>
-    
+
     <ItemGroup>
       <FilesForPackagingFromProject  Include="%(_WCTransforms.Identity)">
         <DestinationRelativePath>$(_DeployFolderName)\%(RecursiveDir)t.%(Filename)%(Extension)</DestinationRelativePath>
@@ -44,20 +55,20 @@
       <FilesForPackagingFromProject  Include="$(SlowCheetahTransformXmlTaskPath)">
         <DestinationRelativePath>$(_DeployFolderName)\$(_SlowCheetahFilename)</DestinationRelativePath>
       </FilesForPackagingFromProject>
-  
+
       <!-- Add the MSBuild file into the package as well -->
       <FilesForPackagingFromProject Include="$(SedodreamPublishProjPath)">
         <DestinationRelativePath>$(_DeployFolderName)\Sedodream.Publish.proj</DestinationRelativePath>
       </FilesForPackagingFromProject>
-    </ItemGroup>    
+    </ItemGroup>
   </Target>
-  
+
   <Target Name="AddSetParamToPackage" AfterTargets="GenerateSampleDeployScript">
     <ItemGroup>
       <_TmpItem Remove="@(_TmpItem)"/>
       <_TmpItem Include="$(GenerateSampleParametersValueLocation)"/>
     </ItemGroup>
-    
+
     <!-- Add the SetParameters.xml file -->
     <ItemGroup>
       <FilesForPackagingFromProject Include="@(_TmpItem)">
@@ -65,5 +76,5 @@
       </FilesForPackagingFromProject>
     </ItemGroup>
   </Target>
-  
+
 </Project>
