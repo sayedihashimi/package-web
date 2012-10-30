@@ -24,10 +24,6 @@
   </Target>
 
   <PropertyGroup>
-    <OnAfterPipelinePreDeployCopyAllFilesToOneFolder>
-      $(OnAfterPipelinePreDeployCopyAllFilesToOneFolder);
-      CopyTransformFilesWap;
-    </OnAfterPipelinePreDeployCopyAllFilesToOneFolder>
     <CopyAllFilesToSingleFolderForPackageDependsOn>
       IncludWebConfigTransformsForPublishing;
       $(CopyAllFilesToSingleFolderForPackageDependsOn);
