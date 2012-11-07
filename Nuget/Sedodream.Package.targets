@@ -7,7 +7,7 @@
     <SlowCheetahTransformXmlTaskPath Condition=" '$(SlowCheetahTransformXmlTaskPath)'=='' ">$(MSBuildThisFileDirectory)\SlowCheetah.Tasks.dll</SlowCheetahTransformXmlTaskPath>
   </PropertyGroup>
 
-  <Target Name="CopyPublishPs1ToPackageFolder" AfterTargets="Package">
+  <Target Name="CopyPublishPs1ToPackageFolder" AfterTargets="Package" DependsOnTargets="PackageUsingManifest">
     <PropertyGroup>
       <_PublishPs1>$(SedodreamInstallFolder)Publish-Interactive.ps1</_PublishPs1>
     </PropertyGroup>
@@ -15,12 +15,14 @@
     <Copy SourceFiles="$(_PublishPs1)" DestinationFiles="$(DefaultPackageOutputDir)\Publish-Interactive.ps1"/>
 
     <!--  -->
-    <ItemGroup Condition=" '$(DesktopBuildPackageLocation)'!='' ">
-      <_PkgLoc Include="$(DesktopBuildPackageLocation)"/>
+    <ItemGroup>
+      <_PkgLoc Include="$(DesktopBuildPackageLocation)" Condition=" '$(DesktopBuildPackageLocation)'!='' "/>
+      <_PkgLoc Include="$(PackageDestinationRoot)" Condition=" '@(_PkgLoc)'=='' " />
     </ItemGroup>
+
     <Copy SourceFiles="$(_PublishPs1)"
           DestinationFiles="@(_PkgLoc->'%(rootdir)%(directory)Publish-Interactive.ps1')"
-          Condition=" '$(DesktopBuildPackageLocation)'!='' "/>
+          Condition=" '@(_PkgLoc)' != '' "/>
   </Target>
 
   <PropertyGroup>
