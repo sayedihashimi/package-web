@@ -91,7 +91,9 @@
   </PropertyGroup>
   <Target Name="AddReplaceRuleForAppPath" Condition=" '$(EnableAddReplaceToUpdatePacakgePath)'=='true' ">
     <PropertyGroup>
-      <_PkgPathFull>$([System.IO.Path]::GetFullPath($(WPPAllFilesInSingleFolder)))</_PkgPathFull>
+      <_PkgPathFull Condition=" '$(WPPAllFilesInSingleFolder)'!='' ">$([System.IO.Path]::GetFullPath($(WPPAllFilesInSingleFolder)))</_PkgPathFull>
+      <!-- $(WPPAllFilesInSingleFolder) is not available on VS2010 so fall back to $(_PackageTempDir) -->
+      <_PkgPathFull Condition=" '$(_PkgPathFull)' == '' ">$([System.IO.Path]::GetFullPath($(_PackageTempDir)))</_PkgPathFull>
     </PropertyGroup>
 
     <!-- escape the text into a regex -->
