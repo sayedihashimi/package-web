@@ -1,15 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Powershell", "Powershell", "{861AE444-5037-4ED7-BCDB-A42F4BD3C13E}"
-	ProjectSection(SolutionItems) = preProject
-		Powershell\Publish-Interactive.ps1 = Powershell\Publish-Interactive.ps1
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sedodream.Powershell.Publish", "Powershell\Sedodream.Powershell.Publish\Sedodream.Powershell.Publish.csproj", "{9EAC9004-9453-4DA4-8267-1189F9DA9784}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{9D33BEB1-0E3D-4F07-B2B4-6C21F68348EB}"
 	ProjectSection(SolutionItems) = preProject
+		Publish-Interactive.ps1 = Publish-Interactive.ps1
 		Sedodream.Publish-Nuget.proj = Sedodream.Publish-Nuget.proj
 		Sedodream.Publish.proj = Sedodream.Publish.proj
 	EndProjectSection
@@ -18,7 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{C160E72D
 	ProjectSection(SolutionItems) = preProject
 		Nuget\Install.ps1 = Nuget\Install.ps1
 		Nuget\Package.nuspec = Nuget\Package.nuspec
-		Powershell\Publish-Interactive.ps1 = Powershell\Publish-Interactive.ps1
 		Nuget\Sedodream.Package.targets = Nuget\Sedodream.Package.targets
 	EndProjectSection
 EndProject
@@ -43,21 +36,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B17F61
 	EndProjectSection
 EndProject
 Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9EAC9004-9453-4DA4-8267-1189F9DA9784}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9EAC9004-9453-4DA4-8267-1189F9DA9784}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9EAC9004-9453-4DA4-8267-1189F9DA9784}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9EAC9004-9453-4DA4-8267-1189F9DA9784}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{9EAC9004-9453-4DA4-8267-1189F9DA9784} = {861AE444-5037-4ED7-BCDB-A42F4BD3C13E}
 		{D5874232-E541-456F-A1B5-C157DC31F060} = {AB1EBA97-5524-4C0A-BF0A-A72D3D099F3F}
 	EndGlobalSection
 EndGlobal

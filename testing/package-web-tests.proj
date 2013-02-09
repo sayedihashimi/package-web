@@ -8,7 +8,7 @@
     <TestOutputRootNoTrailingSlash Condition=" ''=='' ">$(OutputRoot)tests</TestOutputRootNoTrailingSlash>
     <TestOutputRoot Condition=" '$(TestOutputRoot)'=='' ">$(TestOutputRootNoTrailingSlash)\</TestOutputRoot>
     
-    <PublishPs1 Condition=" '$(PublishPs1)'=='' ">$(MSBuildProjectDirectory)\..\Powershell\Publish-Interactive.ps1</PublishPs1>
+    <PublishPs1 Condition=" '$(PublishPs1)'=='' ">$(MSBuildProjectDirectory)\..\Publish-Interactive.ps1</PublishPs1>
     
     <DestModulePath Condition=" '$(DestModulePath)'=='' ">$(TestOutputRoot)PublishIntModule.psm1</DestModulePath>
   </PropertyGroup>

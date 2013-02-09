@@ -1,5 +1,6 @@
 # Folders to ignore #
 OutputRoot/
+packages/
 
 # Known files to ignore always #
 *.suo
