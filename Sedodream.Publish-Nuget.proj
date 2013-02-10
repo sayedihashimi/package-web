@@ -25,7 +25,10 @@
     <ContentItems Include="$(SourceRoot)Sedodream.Publish.proj">
       <DestDir>$(PackageDirectory)\</DestDir>
     </ContentItems>
-    <ContentItems Include="$(SourceRoot)Lib\SlowCheetah.Tasks.dll">
+    <ContentItems Include="$(SourceRoot)packages\Microsoft.Web.Xdt.1.0.0-alpha\lib\net40\Microsoft.Web.XmlTransform.dll">
+      <DestDir>$(PackageDirectory)\</DestDir>
+    </ContentItems>
+    <ContentItems Include="$(SourceRoot)packages\SlowCheetah.Xdt.1.1.1-beta\lib\SlowCheetah.Xdt.dll">
       <DestDir>$(PackageDirectory)\</DestDir>
     </ContentItems>
   </ItemGroup>

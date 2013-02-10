@@ -14,7 +14,7 @@
     <WebConfigTemplateName Condition=" '$(WebConfigTemplateName)'=='' ">t.web.config</WebConfigTemplateName>
     <_DeployFolder>$(DeployFolder)</_DeployFolder>
     <_DeployFolder Condition="!HasTrailingSlash('$(DeployFolder)')">$(DeployFolder)\</_DeployFolder>
-    <TransformAssemblyPath Condition=" '$(TransformAssemblyPath)'=='' ">$(_DeployFolder)SlowCheetah.Tasks.dll</TransformAssemblyPath>
+    <TransformAssemblyPath Condition=" '$(TransformAssemblyPath)'=='' ">$(_DeployFolder)SlowCheetah.Xdt.dll</TransformAssemblyPath>
   </PropertyGroup>
 
   <PropertyGroup>

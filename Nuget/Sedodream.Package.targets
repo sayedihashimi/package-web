@@ -4,7 +4,8 @@
     <_DeployFolderName>_Deploy_</_DeployFolderName>
     <SedodreamInstallFolder Condition=" '$(SedodreamInstallFolder)'=='' ">$(MSBuildProjectDirectory)\_Package\</SedodreamInstallFolder>
     <SedodreamPublishProjPath Condition=" '$(SedodreamPublishProjPath)'=='' ">$(SedodreamInstallFolder)Sedodream.Publish.proj</SedodreamPublishProjPath>
-    <SlowCheetahTransformXmlTaskPath Condition=" '$(SlowCheetahTransformXmlTaskPath)'=='' ">$(MSBuildThisFileDirectory)\SlowCheetah.Tasks.dll</SlowCheetahTransformXmlTaskPath>
+    <SlowCheetahXdtAssemblyPath Condition=" '$(SlowCheetahXdtAssemblyPath)'=='' ">$(MSBuildThisFileDirectory)Microsoft.Web.XmlTransform.dll</SlowCheetahXdtAssemblyPath>
+    <SlowCheetahTransformXmlTaskPath Condition=" '$(SlowCheetahTransformXmlTaskPath)'=='' ">$(MSBuildThisFileDirectory)SlowCheetah.Xdt.dll</SlowCheetahTransformXmlTaskPath>
   </PropertyGroup>
 
   <Target Name="CopyPublishPs1ToPackageFolder" AfterTargets="Package" DependsOnTargets="PackageUsingManifest">
@@ -38,10 +39,14 @@
 
       <_SlowCheetahTasksItem Remove="@(_SlowCheetahTasksItem)"/>
       <_SlowCheetahTasksItem Include="$(SlowCheetahTransformXmlTaskPath)"/>
+
+      <_SlowCheetahXdtAssemblyPathItem Remove="@(_SlowCheetahXdtAssemblyPathItem)"/>
+      <_SlowCheetahXdtAssemblyPathItem Include="$(SlowCheetahXdtAssemblyPath)"/>
     </ItemGroup>
 
     <PropertyGroup>
       <_SlowCheetahFilename>@(_SlowCheetahTasksItem->'%(Filename)%(Extension)')</_SlowCheetahFilename>
+      <_ScXdtAssembyFilename>@(_SlowCheetahXdtAssemblyPathItem->'%(Filename)%(Extension)')</_ScXdtAssembyFilename>
     </PropertyGroup>
 
     <ItemGroup>
@@ -53,6 +58,10 @@
       <FilesForPackagingFromProject  Include="$(SlowCheetahTransformXmlTaskPath)">
         <DestinationRelativePath>$(_DeployFolderName)\$(_SlowCheetahFilename)</DestinationRelativePath>
       </FilesForPackagingFromProject>
+      <FilesForPackagingFromProject  Include="$(SlowCheetahXdtAssemblyPath)">
+        <DestinationRelativePath>$(_DeployFolderName)\$(_ScXdtAssembyFilename)</DestinationRelativePath>
+      </FilesForPackagingFromProject>
+
 
       <!-- Add the MSBuild file into the package as well -->
       <FilesForPackagingFromProject Include="$(SedodreamPublishProjPath)">
@@ -75,7 +84,7 @@
     </ItemGroup>
   </Target>
 
-   
+
   <!--
   Replace the long file path in the package with "website".
   You can disable this by setting the property $(EnableAddReplaceToUpdatePacakgePath) to false.
@@ -83,7 +92,7 @@
   <PropertyGroup>
     <PackagePath Condition=" '$(PackagePath)'=='' ">website</PackagePath>
     <EnableAddReplaceToUpdatePacakgePath Condition=" '$(EnableAddReplaceToUpdatePacakgePath)'=='' ">true</EnableAddReplaceToUpdatePacakgePath>
-  
+
     <PackageDependsOn>
       $(PackageDependsOn);
       AddReplaceRuleForAppPath;
@@ -109,5 +118,5 @@
       </MsDeployReplaceRules>
     </ItemGroup>
   </Target>
-  
+
 </Project>
