@@ -4,8 +4,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{9D33BEB1-0E3D-4F07-B2B4-6C21F68348EB}"
 	ProjectSection(SolutionItems) = preProject
 		Publish-Interactive.ps1 = Publish-Interactive.ps1
-		Sedodream.Publish-Nuget.proj = Sedodream.Publish-Nuget.proj
-		Sedodream.Publish.proj = Sedodream.Publish.proj
+		pw.TransformConfig.proj = pw.TransformConfig.proj
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{C160E72D-8F69-43DD-BEB4-31736943E6D5}"

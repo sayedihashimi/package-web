@@ -3,7 +3,7 @@
     <!-- Don't make this _Deploy becuase it conflicts with default IIS app path name -->
     <_DeployFolderName>_Deploy_</_DeployFolderName>
     <SedodreamInstallFolder Condition=" '$(SedodreamInstallFolder)'=='' ">$(MSBuildProjectDirectory)\_Package\</SedodreamInstallFolder>
-    <SedodreamPublishProjPath Condition=" '$(SedodreamPublishProjPath)'=='' ">$(SedodreamInstallFolder)Sedodream.Publish.proj</SedodreamPublishProjPath>
+    <SedodreamPublishProjPath Condition=" '$(SedodreamPublishProjPath)'=='' ">$(SedodreamInstallFolder)pw.TransformConfig.proj</SedodreamPublishProjPath>
     <SlowCheetahXdtAssemblyPath Condition=" '$(SlowCheetahXdtAssemblyPath)'=='' ">$(MSBuildThisFileDirectory)Microsoft.Web.XmlTransform.dll</SlowCheetahXdtAssemblyPath>
     <SlowCheetahTransformXmlTaskPath Condition=" '$(SlowCheetahTransformXmlTaskPath)'=='' ">$(MSBuildThisFileDirectory)SlowCheetah.Xdt.dll</SlowCheetahTransformXmlTaskPath>
   </PropertyGroup>
@@ -65,7 +65,7 @@
 
       <!-- Add the MSBuild file into the package as well -->
       <FilesForPackagingFromProject Include="$(SedodreamPublishProjPath)">
-        <DestinationRelativePath>$(_DeployFolderName)\Sedodream.Publish.proj</DestinationRelativePath>
+        <DestinationRelativePath>$(_DeployFolderName)\pw.TransformConfig.proj</DestinationRelativePath>
       </FilesForPackagingFromProject>
     </ItemGroup>
   </Target>
