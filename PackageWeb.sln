@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{9D33BEB1-0E3D-4F07-B2B4-6C21F68348EB}"
 	ProjectSection(SolutionItems) = preProject
+		build.bat = build.bat
+		build.proj = build.proj
 		Publish-Interactive.ps1 = Publish-Interactive.ps1
 		pw.TransformConfig.proj = pw.TransformConfig.proj
 	EndProjectSection

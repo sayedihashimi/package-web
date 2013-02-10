@@ -22,7 +22,7 @@
     <ContentItems Include="$(SourceRoot)Nuget\Sedodream.Package.targets">
       <DestDir>$(PackageDirectory)\</DestDir>
     </ContentItems>
-    <ContentItems Include="$(SourceRoot)pw.TransformConfig.proj">
+    <ContentItems Include="$(SourceRoot)Nuget\pw.TransformConfig.proj">
       <DestDir>$(PackageDirectory)\</DestDir>
     </ContentItems>
     <ContentItems Include="$(SourceRoot)packages\Microsoft.Web.Xdt.1.0.0-alpha\lib\net40\Microsoft.Web.XmlTransform.dll">
