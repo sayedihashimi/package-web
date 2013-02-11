@@ -4,7 +4,7 @@ param($rootPath, $toolsPath, $package, $project)
 # 1. Create a .wpp.targets file if it doesn't already exist
 # 2. If the .wpp.targets doesn't have an import for Sedodream.Package.proj then insert one
 
-$wppImportLabel = "SedodreamPackageImport"
+$pwMsbuildLabel = "PackageWeb"
 
 function WriteParamsToFile {
     param([string]$filePath)
@@ -68,12 +68,13 @@ function AddImportToWppTargets {
     $propGroup = $projRoot.AddPropertyGroup()
     $ppe = $propGroup.AddProperty($targetsPropertyName,$importPath)
     $e = $ppe.Condition = (" '`$({0})'=='' " -f $ppe.Name)
-    
+    $propGroup.Label = $pwMsbuildLabel
+	
     # add the import itself
     $importStr = ("`$({0}){1}" -f $targetsPropertyName, $importFileName)
     $importElement = $projRoot.AddImport($importStr)
-    $importElement.Label = $wppImportLabel | Out-Null
-    $importElement.Condition= ("Exists('{0}')" -f $importStr) | Out-Null
+    $importElement.Label = $pwMsbuildLabel
+    $importElement.Condition= ("Exists('{0}')" -f $importStr)
     $projRoot.Save() | Out-Null
 }
 
@@ -83,7 +84,7 @@ function DoesProjectHaveImport {
     $hasImport = $false
     foreach($pie in $projRoot.Imports) {
         # see if it has the expected label
-        if($pie -ne $null -and $pie.Label -ne $null -and $pie.Label.Trim() -ceq $wppImportLabel) {
+        if($pie -ne $null -and $pie.Label -ne $null -and $pie.Label.Trim() -ceq $pwMsbuildLabel) {
             $hasImport = $true
             break
         }               
