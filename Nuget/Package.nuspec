@@ -12,7 +12,7 @@
     <description>
     This will extend web packages so that you can publish a package to different environments. Your packages will contain all of your web.config transforms.
     </description>
-    <copyright>Copyright 2011 Sayed Ibrahim Hashimi</copyright>
+    <copyright>Copyright 2011-2013 Sayed Ibrahim Hashimi</copyright>
     <tags>PackageWeb Package Web Package-Web Deploy ASP.NET MSDeploy</tags>
     <!--<dependencies>
       <dependency id="SampleDependency" version="1.0" />
