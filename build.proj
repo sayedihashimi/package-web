@@ -29,7 +29,7 @@
     <ContentItems Include="$(SourceRoot)lib\Microsoft.Web.Xdt.1.0.0-alpha\lib\net40\Microsoft.Web.XmlTransform.dll">
       <DestDir>$(PackageDirectory)\</DestDir>
     </ContentItems>
-    <ContentItems Include="$(SourceRoot)lib\SlowCheetah.Xdt.1.1.1-beta\lib\SlowCheetah.Xdt.dll">
+    <ContentItems Include="$(SourceRoot)lib\SlowCheetah.Xdt.1.1.1\lib\SlowCheetah.Xdt.dll">
       <DestDir>$(PackageDirectory)\</DestDir>
     </ContentItems>
   </ItemGroup>
