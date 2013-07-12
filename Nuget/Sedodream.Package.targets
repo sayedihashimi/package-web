@@ -6,6 +6,7 @@
     <!--<SedodreamPublishProjPath Condition=" '$(SedodreamPublishProjPath)'=='' ">$(SedodreamInstallFolder)pw.TransformConfig.proj</SedodreamPublishProjPath>-->
     <SlowCheetahXdtAssemblyPath Condition=" '$(SlowCheetahXdtAssemblyPath)'=='' ">$(MSBuildThisFileDirectory)Microsoft.Web.XmlTransform.dll</SlowCheetahXdtAssemblyPath>
     <SlowCheetahTransformXmlTaskPath Condition=" '$(SlowCheetahTransformXmlTaskPath)'=='' ">$(MSBuildThisFileDirectory)SlowCheetah.Xdt.dll</SlowCheetahTransformXmlTaskPath>
+    <SlowCheetahTransformXmlExePath Condition=" '$(SlowCheetahTransformXmlExePath)'=='' ">$(MSBuildThisFileDirectory)SlowCheetah.Xdt.exe</SlowCheetahTransformXmlExePath>
   </PropertyGroup>
 
   <Target Name="CopyPublishPs1ToPackageFolder" AfterTargets="Package" DependsOnTargets="PackageUsingManifest">
@@ -40,12 +41,16 @@
       <_SlowCheetahTasksItem Remove="@(_SlowCheetahTasksItem)"/>
       <_SlowCheetahTasksItem Include="$(SlowCheetahTransformXmlTaskPath)"/>
 
+      <_SlowCheetahExeItem Remove="@(_SlowCheetahExeItem)"/>
+      <_SlowCheetahExeItem Include="$(SlowCheetahTransformXmlExePath)"/>
+
       <_SlowCheetahXdtAssemblyPathItem Remove="@(_SlowCheetahXdtAssemblyPathItem)"/>
       <_SlowCheetahXdtAssemblyPathItem Include="$(SlowCheetahXdtAssemblyPath)"/>
     </ItemGroup>
 
     <PropertyGroup>
       <_SlowCheetahFilename>@(_SlowCheetahTasksItem->'%(Filename)%(Extension)')</_SlowCheetahFilename>
+      <_SlowCheetahExeFilename>@(_SlowCheetahExeItem->'%(Filename)%(Extension)')</_SlowCheetahExeFilename>
       <_ScXdtAssembyFilename>@(_SlowCheetahXdtAssemblyPathItem->'%(Filename)%(Extension)')</_ScXdtAssembyFilename>
     </PropertyGroup>
 
@@ -57,6 +62,9 @@
       <!-- Add the assemlby which has the TrasnfromXml task-->
       <FilesForPackagingFromProject  Include="$(SlowCheetahTransformXmlTaskPath)">
         <DestinationRelativePath>$(_DeployFolderName)\$(_SlowCheetahFilename)</DestinationRelativePath>
+      </FilesForPackagingFromProject>
+      <FilesForPackagingFromProject  Include="$(SlowCheetahTransformXmlExePath)">
+        <DestinationRelativePath>$(_DeployFolderName)\$(_SlowCheetahExeFilename)</DestinationRelativePath>
       </FilesForPackagingFromProject>
       <FilesForPackagingFromProject  Include="$(SlowCheetahXdtAssemblyPath)">
         <DestinationRelativePath>$(_DeployFolderName)\$(_ScXdtAssembyFilename)</DestinationRelativePath>

@@ -32,6 +32,9 @@
     <ContentItems Include="$(SourceRoot)lib\SlowCheetah.Xdt.1.1.1\lib\SlowCheetah.Xdt.dll">
       <DestDir>$(PackageDirectory)\</DestDir>
     </ContentItems>
+    <ContentItems Include="$(SourceRoot)lib\SlowCheetah.Xdt.1.1.1\lib\SlowCheetah.Xdt.exe">
+      <DestDir>$(PackageDirectory)\</DestDir>
+    </ContentItems>
   </ItemGroup>
 
   <PropertyGroup>
