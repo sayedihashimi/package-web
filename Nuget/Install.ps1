@@ -58,11 +58,10 @@ function CreateWppTargetsFile {
 function AddImportToWppTargets {
     param($projRoot)
    
-    $targetsPropertyName = "SedodreamPackageFolder"
-    $importPath = "`$(MSBuildProjectDirectory)\_Package\"
-    $importCondition = " '`$(SedodreamPackageFolder)'=='' "
-    
+    $targetsPropertyName = "PackageWebTargetsPath"
     $importFileName = "Sedodream.Package.targets"
+    $importPath = ("`$(MSBuildProjectDirectory)\_Package\{0}" -f $importFileName)
+    $importCondition = " '`$(PackageWebTargetsPath)'=='' "
     
     # add the property for the import location 
     $propGroup = $projRoot.AddPropertyGroup()
@@ -71,7 +70,7 @@ function AddImportToWppTargets {
     $propGroup.Label = $pwMsbuildLabel
 	
     # add the import itself
-    $importStr = ("`$({0}){1}" -f $targetsPropertyName, $importFileName)
+    $importStr = ("`$({0})" -f $targetsPropertyName)
     $importElement = $projRoot.AddImport($importStr)
     $importElement.Label = $pwMsbuildLabel
     $importElement.Condition= ("Exists('{0}')" -f $importStr)

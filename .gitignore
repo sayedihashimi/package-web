@@ -7,3 +7,4 @@ packages/
 *.user
 ~*.docx
 msbuild*.log
+*.sublime-workspace*
