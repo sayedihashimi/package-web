@@ -3,7 +3,9 @@
 	[
 		{
 			"follow_symlinks": true,
-			"path": "src"
+			"path": "src",
+			"folder_exclude_patterns" : ["OutputRoot"],
+			"file_exclude_patterns": ["msbuild*log"]
 		}
 	]
 }

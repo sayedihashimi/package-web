@@ -1,7 +1,9 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <!-- Don't make this _Deploy becuase it conflicts with default IIS app path name -->
-    <_DeployFolderName>_Deploy_</_DeployFolderName>
+    <_DeployFolderName Condition=" '$(_DeployFolderName)'=='' ">_Deploy_</_DeployFolderName>
+    <!-- Folder name under _Deploy where transforms will be stored -->
+    <pw-TransformFolderName Condition=" '$(pw-TransformFolderName)'=='' ">transforms</pw-TransformFolderName>
     <SedodreamInstallFolder Condition=" '$(SedodreamInstallFolder)'=='' ">$(MSBuildProjectDirectory)\_Package\</SedodreamInstallFolder>
     <!--<SedodreamPublishProjPath Condition=" '$(SedodreamPublishProjPath)'=='' ">$(SedodreamInstallFolder)pw.TransformConfig.proj</SedodreamPublishProjPath>-->
     <SlowCheetahXdtAssemblyPath Condition=" '$(SlowCheetahXdtAssemblyPath)'=='' ">$(MSBuildThisFileDirectory)Microsoft.Web.XmlTransform.dll</SlowCheetahXdtAssemblyPath>
@@ -32,9 +34,14 @@
       IncludWebConfigTransformsForPublishing;
       $(CopyAllFilesToSingleFolderForPackageDependsOn);
     </CopyAllFilesToSingleFolderForPackageDependsOn>
+
+    <IncludWebConfigTransformsForPublishingDependsOn>
+      $(IncludWebConfigTransformsForPublishingDependsOn);
+      pw-IncludeTransformFilesIntoPackage;
+    </IncludWebConfigTransformsForPublishingDependsOn>
   </PropertyGroup>
 
-  <Target Name="IncludWebConfigTransformsForPublishing" AfterTargets="CopyPipelineFiles" BeforeTargets="CopyAllFilesToSingleFolderForMsdeploy">
+  <Target Name="IncludWebConfigTransformsForPublishing" AfterTargets="CopyPipelineFiles" BeforeTargets="CopyAllFilesToSingleFolderForMsdeploy" DependsOnTargets="$(IncludWebConfigTransformsForPublishingDependsOn)">
     <ItemGroup>
       <_WCTransforms Include="$(MSBuildProjectDirectory)\web.config;$(MSBuildProjectDirectory)\web.*.config"/>
 
@@ -92,6 +99,90 @@
     </ItemGroup>
   </Target>
 
+
+  <!--
+    This is the section that will handle finding transform files as well as files to be transformed
+    and include them into the generated package
+  -->
+  <ItemDefinitionGroup>
+    <!-- Set the default value to false here -->
+    <None>
+      <TransformOnBuild>false</TransformOnBuild>
+      <IsTransformFile>false</IsTransformFile>
+      <Link></Link>
+    </None>
+    <Content>
+      <TransformOnBuild>false</TransformOnBuild>
+      <IsTransformFile>false</IsTransformFile>
+      <Link></Link>
+    </Content>
+    <Resource>
+      <TransformOnBuild>false</TransformOnBuild>
+      <IsTransformFile>false</IsTransformFile>
+      <Link></Link>
+    </Resource>
+    <EmbeddedResource>
+      <TransformOnBuild>false</TransformOnBuild>
+      <IsTransformFile>false</IsTransformFile>
+      <Link></Link>
+    </EmbeddedResource>
+
+    <_FilesToTransform>
+      <IsAppConfig>false</IsAppConfig>
+    </_FilesToTransform>
+  </ItemDefinitionGroup>
+
+  <PropertyGroup>
+    <pw-IncludeTransformFilesIntoPackageDependsOn>
+      $(pw-IncludeTransformFilesIntoPackage);
+      pw-DiscoverTransforms;
+      pw-CoreIncludeTransformFilesIntoPackage;
+    </pw-IncludeTransformFilesIntoPackageDependsOn>    
+  </PropertyGroup>
+  <Target Name="pw-IncludeTransformFilesIntoPackage" DependsOnTargets="$(pw-IncludeTransformFilesIntoPackageDependsOn)" />
+  <Target Name="pw-DiscoverTransforms">
+    <!-- Here we want to gather all files which are being transformed as well as all transforms -->
+    <ItemGroup>    
+      <pw-TransformFiles Include="@(None);@(Content);@(Resource);@(EmbeddedResource)"
+                         Condition=" '%(IsTransformFile)' == 'true' ">
+        <Link>%(Link)</Link>
+        <OriginalItemSpec>%(Identity)</OriginalItemSpec>
+      </pw-TransformFiles>
+
+      <pw-FilesToTransform Include="@(None);@(Content);@(Resource);@(EmbeddedResource)"
+                         Condition=" '%(TransformOnBuild)' == 'true' ">
+        <Link>%(Link)</Link>
+        <OriginalItemSpec>%(Identity)</OriginalItemSpec>
+      </pw-FilesToTransform>
+    </ItemGroup>
+
+    <Message Text="pw-TransformFiles: @(pw-TransformFiles)" Importance="low"/>
+    <Message Text="pw-FilesToTransform: @(pw-FilesToTransform)" Importance="low"/>
+
+  </Target>
+  <PropertyGroup>
+    <pw-CoreIncludeTransformFilesIntoPackageDependsOn>
+      $(pw-CoreIncludeTransformFilesIntoPackageDependsOn);
+      pw-DiscoverTransforms;
+    </pw-CoreIncludeTransformFilesIntoPackageDependsOn>
+  </PropertyGroup>
+  <Target Name="pw-CoreIncludeTransformFilesIntoPackage" DependsOnTargets="$(pw-CoreIncludeTransformFilesIntoPackageDependsOn)">
+    <Message Text="pw-CoreIncludeTransformFilesIntoPackage Adding transform files to package"/>
+
+    <Message Text="FilesForPackagingFromProject: @(FilesForPackagingFromProject)" Importance="High"/>
+
+    <ItemGroup>
+    <FilesForPackagingFromProject Include="@(pw-TransformFiles)">
+        <DestinationRelativePath>$(_DeployFolderName)\$(pw-TransformFolderName)\%(RelativeDir)%(Filename)%(Extension)</DestinationRelativePath>
+      </FilesForPackagingFromProject>
+
+      <FilesForPackagingFromProject Include="@(pw-FilesToTransform)">
+        <DestinationRelativePath>$(_DeployFolderName)\$(pw-TransformFolderName)\%(RelativeDir)%(Filename)%(Extension)</DestinationRelativePath>
+      </FilesForPackagingFromProject>
+    </ItemGroup>
+    <Message Text="*********************************************************" Importance="High"/>
+    <Message Text="FilesForPackagingFromProject: @(FilesForPackagingFromProject)" Importance="High"/>
+  </Target>
 
   <!--
   Replace the long file path in the package with "website".
