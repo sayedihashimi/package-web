@@ -173,11 +173,11 @@
 
     <ItemGroup>
     <FilesForPackagingFromProject Include="@(pw-TransformFiles)">
-        <DestinationRelativePath>$(_DeployFolderName)\$(pw-TransformFolderName)\%(RelativeDir)%(Filename)%(Extension)</DestinationRelativePath>
+        <DestinationRelativePath>$(_DeployFolderName)\$(pw-TransformFolderName)\transformFiles\%(RelativeDir)%(Filename)%(Extension)</DestinationRelativePath>
       </FilesForPackagingFromProject>
 
       <FilesForPackagingFromProject Include="@(pw-FilesToTransform)">
-        <DestinationRelativePath>$(_DeployFolderName)\$(pw-TransformFolderName)\%(RelativeDir)%(Filename)%(Extension)</DestinationRelativePath>
+        <DestinationRelativePath>$(_DeployFolderName)\$(pw-TransformFolderName)\src\%(RelativeDir)%(Filename)%(Extension)</DestinationRelativePath>
       </FilesForPackagingFromProject>
     </ItemGroup>
     <Message Text="*********************************************************" Importance="High"/>
