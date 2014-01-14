@@ -43,7 +43,7 @@
 
   <Target Name="IncludWebConfigTransformsForPublishing" AfterTargets="CopyPipelineFiles" BeforeTargets="CopyAllFilesToSingleFolderForMsdeploy" DependsOnTargets="$(IncludWebConfigTransformsForPublishingDependsOn)">
     <ItemGroup>
-      <_WCTransforms Include="$(MSBuildProjectDirectory)\web.config;$(MSBuildProjectDirectory)\web.*.config"/>
+      <_WCTransforms Condition="Exists('$(MSBuildProjectDirectory)\web.config')" Include="$(MSBuildProjectDirectory)\web.config;$(MSBuildProjectDirectory)\web.*.config"/>
 
       <_SlowCheetahTasksItem Remove="@(_SlowCheetahTasksItem)"/>
       <_SlowCheetahTasksItem Include="$(SlowCheetahTransformXmlTaskPath)"/>
