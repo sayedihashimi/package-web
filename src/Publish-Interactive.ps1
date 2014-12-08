@@ -288,7 +288,7 @@ function ExecuteTransforms(){
 		
         $transforms = @()
         if($transformName){
-            $transforms = $transformName.Split(';')
+            $transforms = $transformName -split '[;|]' #support splitting on both ';' and '|'
         }
 
         ExecuteWebConfigTransforms -deployFolder $deployFolder -transformsToExecute $transforms | Out-Null
