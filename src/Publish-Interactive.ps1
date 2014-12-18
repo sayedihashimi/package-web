@@ -507,6 +507,7 @@ function PromptUserForParameterValues {
     if(!($publishParameters)) { $publishParameters = @() }
     
 	$publishParameters += @{name="Computer name";defaultValue="localhost";isInternalParameter=$true}
+	$publishParameters += @{name="Deploy to site root";defaultValue="false";isInternalParameter=$true}
     $publishParameters += @{name="Username";defaultValue="";isInternalParameter=$true}
     $publishParameters += @{name="Password";defaultValue="";isInternalParameter=$true;isSecure=$true}
     $publishParameters += @{name=("{0}" -f $paramNameAllowUntrusted);defaultValue="false";isInternalParameter=$true}
@@ -626,9 +627,15 @@ function BuildMSDeployCommand {
     $isCompNameLocalhost = IsComputerNameLocalhost -compName $compNameParamValue
     if($compNameParamValue.length -gt 0 -and !$isCompNameLocalhost) {
         # Since this is not for localhost we need to combine site name with this for hoster scenarios
-        $siteNameParam = FindParamByName -allParams $paramValues -name $paramNameIISApp
         $compNameFixedUp = FixupMSDeployServiceUrl -msdServiceUrl $compNameParamValue
-        $compNameCommandFrag = ",ComputerName='{0}?site={1}'" -f $compNameFixedUp, $siteNameParam.Value
+		$deployToSiteRoot = [system.convert]::ToBoolean((FindParamByName -allParams $paramValues -name "Deploy to site root").Value)
+		if ($deployToSiteRoot) {
+			$compNameCommandFrag = ",ComputerName='{0}'" -f $compNameFixedUp
+		}
+        else {
+		    $siteNameParam = FindParamByName -allParams $paramValues -name $paramNameIISApp
+			$compNameCommandFrag = ",ComputerName='{0}?site={1}'" -f $compNameFixedUp, $siteNameParam.Value
+		}
     }
 
     # Auth type parameter
