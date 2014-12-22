@@ -80,9 +80,7 @@
 	<!-- nuget pack "C:\...\Package.nuspec" -NoPackageAnalysis -OutputDirectory "C:\...\Output\" -->
     <PropertyGroup>
       <_NugetSpecFile>%(_NugetSpecOutputFile.FullPath)</_NugetSpecFile>
-	  <_NugetVersion Condition="'$(BuildMetaData)' == '0'">$(GfvSemVer)</_NugetVersion>
-	  <_NugetVersion Condition="'$(BuildMetaData)' != '0'">$(GfvNuGetVersion)-$(GfvBranchName.Replace(".", ""))-$(GfvBuildMetaData)</_NugetVersion>
-      <_Cmd>"$(NugetExe)" pack "$(_NugetSpecFile)" -NoPackageAnalysis -OutputDirectory "$(OutputRootNoTrailingSlash)" -Version $(_NugetVersion) </_Cmd>
+      <_Cmd>"$(NugetExe)" pack "$(_NugetSpecFile)" -NoPackageAnalysis -OutputDirectory "$(OutputRootNoTrailingSlash)" -Version $(GfvNuGetVersion) </_Cmd>
     </PropertyGroup>
 
     <Message Text="_Cmd: $(_Cmd)" Importance="low" />
