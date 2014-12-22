@@ -81,7 +81,7 @@
     <PropertyGroup>
       <_NugetSpecFile>%(_NugetSpecOutputFile.FullPath)</_NugetSpecFile>
 	  <_NugetVersion Condition="'$(BuildMetaData)' == '0'">$(GfvSemVer)</_NugetVersion>
-	  <_NugetVersion Condition="'$(BuildMetaData)' != '0'">$(GfvFullSemVer.Replace("+", "-beta-"))</_NugetVersion>
+	  <_NugetVersion Condition="'$(BuildMetaData)' != '0'">$(GfvNuGetVersion)-$(GfvBranchName.Replace(".", ""))-$(GfvBuildMetaData)</_NugetVersion>
       <_Cmd>"$(NugetExe)" pack "$(_NugetSpecFile)" -NoPackageAnalysis -OutputDirectory "$(OutputRootNoTrailingSlash)" -Version $(_NugetVersion) </_Cmd>
     </PropertyGroup>
 
