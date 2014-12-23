@@ -1,4 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="CreateNugetPackage">
+	<Import Project="$(MSBuildProjectDirectory)\lib\GitVersionTask.2.0.0\Build\GitVersionTask.targets" Condition="Exists('$(MSBuildProjectDirectory)\lib\GitVersionTask.2.0.0\Build\GitVersionTask.targets')" />
+
   <!-- This script will create the Nuget package -->
 
   <PropertyGroup>
@@ -48,10 +50,37 @@
   <Target Name="CreateNugetPackage" DependsOnTargets="$(CreateNugetPackageDependsOn)" />
 
   <Target Name="CoreCreateNugetPackage">
-    <!-- nuget pack "C:\...\Package.nuspec" -NoPackageAnalysis -OutputDirectory "C:\...\Output\" -->
+	 
+	<!-- Calculate the version of PackageWeb using GitVersion -->
+	<GetVersion SolutionDirectory="$(SourceRoot)">
+		<Output TaskParameter="Major" PropertyName="GfvMajor" />
+		<Output TaskParameter="Minor" PropertyName="GfvMinor" />
+		<Output TaskParameter="Patch" PropertyName="GfvPatch" />
+		<Output TaskParameter="BuildMetaData" PropertyName="GfvBuildMetaData" />
+		<Output TaskParameter="FullBuildMetaData" PropertyName="GfvFullBuildMetaData" />
+		<Output TaskParameter="BranchName" PropertyName="GfvBranchName" />
+		<Output TaskParameter="Sha" PropertyName="GfvSha" />
+		<Output TaskParameter="MajorMinorPatch" PropertyName="GfvMajorMinorPatch" />
+		<Output TaskParameter="SemVer" PropertyName="GfvSemVer" />
+		<Output TaskParameter="LegacySemVer" PropertyName="GfvLegacySemVer" />
+		<Output TaskParameter="LegacySemVerPadded" PropertyName="GfvLegacySemVerPadded" />
+		<Output TaskParameter="FullSemVer" PropertyName="GfvFullSemVer" />
+		<Output TaskParameter="AssemblySemVer" PropertyName="GfvAssemblySemVer" />
+		<Output TaskParameter="NuGetVersion" PropertyName="GfvNuGetVersion" />
+		<Output TaskParameter="ClassicVersion" PropertyName="GfvClassicVersion" />
+		<Output TaskParameter="ClassicVersionWithTag" PropertyName="GfvClassicVersionWithTag" />
+		<Output TaskParameter="PreReleaseTag" PropertyName="GfvPreReleaseTag" />
+		<Output TaskParameter="PreReleaseTagWithDash" PropertyName="GfvPreReleaseTagWithDash" />
+		<Output TaskParameter="InformationalVersion" PropertyName="GfvInformationalVersion" />
+	</GetVersion>
+
+	<Message Text="Version: $(GfvFullSemVer)" />
+	<Message Text="Generating a prerelease nupkg!" Condition="'$(BuildMetaData)' != '0'" Importance="high" />
+	
+	<!-- nuget pack "C:\...\Package.nuspec" -NoPackageAnalysis -OutputDirectory "C:\...\Output\" -->
     <PropertyGroup>
       <_NugetSpecFile>%(_NugetSpecOutputFile.FullPath)</_NugetSpecFile>
-      <_Cmd>"$(NugetExe)" pack "$(_NugetSpecFile)" -NoPackageAnalysis -OutputDirectory "$(OutputRootNoTrailingSlash)" </_Cmd>
+      <_Cmd>"$(NugetExe)" pack "$(_NugetSpecFile)" -NoPackageAnalysis -OutputDirectory "$(OutputRootNoTrailingSlash)" -Version $(GfvNuGetVersion) </_Cmd>
     </PropertyGroup>
 
     <Message Text="_Cmd: $(_Cmd)" Importance="low" />

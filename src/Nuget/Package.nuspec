@@ -2,7 +2,8 @@
 <package >
   <metadata>
     <id>PackageWeb</id>
-    <version>1.1.16.3</version>
+	<!-- Do not set the version manually. The build script will auto version the nupkg wth GitVersion.  -->
+    <version>0.0.1-manualbuild</version> 
     <authors>Sayed Ibrahim Hashimi</authors>
     <owners>Sayed Ibrahim Hashimi</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
