@@ -624,11 +624,19 @@ function BuildMSDeployCommand {
     $compNameParamValue = (FindParamByName -allParams $paramValues -name "Computer name").Value
     $compNameCommandFrag = ""
     $isCompNameLocalhost = IsComputerNameLocalhost -compName $compNameParamValue
+
     if($compNameParamValue.length -gt 0 -and !$isCompNameLocalhost) {
         # Since this is not for localhost we need to combine site name with this for hoster scenarios
         $siteNameParam = FindParamByName -allParams $paramValues -name $paramNameIISApp
         $compNameFixedUp = FixupMSDeployServiceUrl -msdServiceUrl $compNameParamValue
-        $compNameCommandFrag = ",ComputerName='{0}?site={1}'" -f $compNameFixedUp, $siteNameParam.Value
+        if ($isCompNameLocalhost)
+        {
+            $compNameCommandFrag = ",ComputerName='{0}?site={1}'" -f $compNameFixedUp, $siteNameParam.Value
+        }
+        else
+        {
+            $compNameCommandFrag = ",ComputerName='{0}'" -f $compNameFixedUp
+        }        
     }
 
     # Auth type parameter
